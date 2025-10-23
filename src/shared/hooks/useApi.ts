@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
+
 import type { ApiError } from '../../core/api';
 
 export interface UseApiState<T> {

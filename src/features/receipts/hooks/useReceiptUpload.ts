@@ -1,6 +1,7 @@
 import { useApi } from '../../../shared/hooks/useApi';
+
 import { receiptUploadService } from '../services/receiptUpload';
-import type { ReceiptUploadResponse, ReceiptUpdateRequest } from '../types';
+import type { ReceiptUpdateRequest } from '../types';
 
 // Hook for uploading receipts
 export function useReceiptUpload() {

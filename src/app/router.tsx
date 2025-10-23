@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import { ReceiptUpload } from '../features/receipts/pages/ReceiptUpload';
 import { UsersPage } from '../features/users/pages/UsersPage';
 

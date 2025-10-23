@@ -1,7 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '../../../shared/components/button';
 import { ArrowLeft } from 'lucide-react';
+
+import { Button } from '../../../shared/components/button';
 
 export const UsersPage: React.FC = () => {
   const navigate = useNavigate();

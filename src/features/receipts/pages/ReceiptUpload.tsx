@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { setCurrentReceipt } from '../../../core/state/storage';
-import { apiClient } from '../../../core/api';
 import { Receipt as ReceiptIcon, Camera, Upload, Users } from 'lucide-react';
+
+import { setCurrentReceipt } from '../../../core/state/storage';
 
 export const ReceiptUpload: React.FC = () => {
   const navigate = useNavigate();
