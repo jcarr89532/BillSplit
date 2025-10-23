@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
+import { Button } from '../../../shared/components/button';
 import { ArrowLeft } from 'lucide-react';
 
-export const FriendsPage: React.FC = () => {
+export const UsersPage: React.FC = () => {
   const navigate = useNavigate();
 
   const handleBack = () => {

@@ -1,29 +1,60 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { generateId } from '@/lib/storage';
-import { setCurrentReceipt } from '@/lib/storage';
+import { setCurrentReceipt } from '../../../core/state/storage';
+import { apiClient } from '../../../core/api';
 import { Receipt as ReceiptIcon, Camera, Upload, Users } from 'lucide-react';
 
-export const HomePage: React.FC = () => {
+export const ReceiptUpload: React.FC = () => {
   const navigate = useNavigate();
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
 
-  const handleImageSelect = (file: File) => {
-    const url = URL.createObjectURL(file);
+  const handleImageSelect = async (file: File) => {
+    console.log('File selected:', file.name);
+    setUploading(true);
+    setUploadError(null);
+    setUploadSuccess(false);
     
-    // Create initial receipt with image
-    const receipt = {
-      id: generateId(),
-      imageUrl: url,
-      items: [],
-      participants: [],
-      tax: 0,
-      tip: 0,
-      total: 0,
-      createdAt: new Date().toISOString()
-    };
-    
-    setCurrentReceipt(receipt);
+    try {
+      // Simple approach: just create a local receipt for now
+      const receipt = {
+        id: Date.now().toString(),
+        imageUrl: URL.createObjectURL(file),
+        items: [
+          { id: '1', name: 'Sample Item 1', price: 5.99, quantity: 1 },
+          { id: '2', name: 'Sample Item 2', price: 3.50, quantity: 2 }
+        ],
+        participants: [],
+        tax: 1.20,
+        tip: 2.00,
+        total: 12.69,
+        createdAt: new Date().toISOString()
+      };
+      
+      setCurrentReceipt(receipt);
+      setUploadSuccess(true);
+      console.log('Receipt created:', receipt);
+      
+      // Optional: Try to upload to backend (commented out for now)
+      // await uploadToBackend(file);
+      
+    } catch (error) {
+      console.error('Upload failed:', error);
+      setUploadError('Failed to process receipt');
+    } finally {
+      setUploading(false);
+    }
   };
+
+  // Simple upload function (for future use)
+  // const uploadToBackend = async (file: File) => {
+  //   const formData = new FormData();
+  //   formData.append('image', file);
+  //   
+  //   const response = await apiClient.post('/receipts/upload', formData);
+  //   return response.data;
+  // };
 
   const openCamera = () => {
     // Create a file input that can access camera
@@ -75,6 +106,26 @@ export const HomePage: React.FC = () => {
             <p className="text-xl" style={{ color: '#a0aec0' }}>
               Split bills with friends
             </p>
+            
+            {/* Upload Status */}
+            {uploading && (
+              <div className="mt-4 p-4 bg-blue-900 bg-opacity-50 rounded-lg">
+                <p className="text-blue-300">Processing receipt...</p>
+              </div>
+            )}
+            
+            {uploadError && (
+              <div className="mt-4 p-4 bg-red-900 bg-opacity-50 rounded-lg">
+                <p className="text-red-300">Error: {uploadError}</p>
+              </div>
+            )}
+            
+            {uploadSuccess && (
+              <div className="mt-4 p-4 bg-green-900 bg-opacity-50 rounded-lg">
+                <p className="text-green-300">Receipt processed successfully!</p>
+              </div>
+            )}
+            
           </div>
         </div>
 
