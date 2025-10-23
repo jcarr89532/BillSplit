@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { ApiError } from '../../core/api';
+import type { ApiError } from '../../core/api';
 
 export interface UseApiState<T> {
   data: T | null;
@@ -30,8 +30,7 @@ export function useApi<T = any>(
         setState({ data: result, loading: false, error: null });
         return result;
       } catch (error) {
-        const apiError = error instanceof ApiError ? error : new ApiError('Unknown error');
-        setState(prev => ({ ...prev, loading: false, error: apiError }));
+        setState(prev => ({ ...prev, loading: false, error: error as ApiError }));
         return null;
       }
     },
