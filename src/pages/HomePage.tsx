@@ -1,23 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { Receipt } from '@/types';
 import { generateId } from '@/lib/storage';
 import { setCurrentReceipt } from '@/lib/storage';
-import { ImageUploader } from '@/components/ImageUploader';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Receipt as ReceiptIcon, Camera, Upload, Users } from 'lucide-react';
 
 export const HomePage: React.FC = () => {
   const navigate = useNavigate();
-  const [imageUrl, setImageUrl] = useState<string>('');
 
   const handleImageSelect = (file: File) => {
     const url = URL.createObjectURL(file);
-    setImageUrl(url);
     
     // Create initial receipt with image
-    const receipt: Partial<Receipt> = {
+    const receipt = {
       id: generateId(),
       imageUrl: url,
       items: [],
@@ -29,19 +23,6 @@ export const HomePage: React.FC = () => {
     };
     
     setCurrentReceipt(receipt);
-  };
-
-  const handleImageRemove = () => {
-    if (imageUrl) {
-      URL.revokeObjectURL(imageUrl);
-      setImageUrl('');
-    }
-    setCurrentReceipt({});
-  };
-
-
-  const handleContinue = () => {
-    navigate('/review');
   };
 
   const openCamera = () => {
