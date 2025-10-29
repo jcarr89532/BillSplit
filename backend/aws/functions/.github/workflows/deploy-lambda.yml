@@ -1,0 +1,40 @@
+name: Deploy Lambdas on push to main
+
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  id-token: write     # required for GitHub OIDC
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        fn:
+          - { folder: "getUploadUrl", lambda_name: "getUploadUrl" }
+          - { folder: "ocrExtraction", lambda_name: "ocrExtraction" }
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Zip ${{ matrix.fn.lambda_name }}
+        run: |
+          cd functions/${{ matrix.fn.folder }}
+          zip -r ../../../build-${{ matrix.fn.lambda_name }}.zip . -x "*.git*" "*.pyc" "__pycache__/*"
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam:496707410440:role/github-deploy-role
+          aws-region: us-west-2
+
+      - name: Update Lambda ${{ matrix.fn.lambda_name }}
+        run: |
+          aws lambda update-function-code \
+            --function-name ${{ matrix.fn.lambda_name }} \
+            --zip-file fileb://build-${{ matrix.fn.lambda_name }}.zip \
+            --publish
