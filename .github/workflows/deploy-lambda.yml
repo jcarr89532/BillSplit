@@ -23,8 +23,8 @@ jobs:
 
       - name: Zip ${{ matrix.fn.lambda_name }}
         run: |
-          cd functions/${{ matrix.fn.folder }}
-          zip -r ../../../build-${{ matrix.fn.lambda_name }}.zip . -x "*.git*" "*.pyc" "__pycache__/*"
+          cd backend/aws/functions/${{ matrix.fn.folder }}
+          zip -r ../../../../build-${{ matrix.fn.lambda_name }}.zip . -x "*.git*" "*.pyc" "__pycache__/*"
 
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
