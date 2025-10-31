@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         fn:
-          - { folder: "getUploadUrl", lambda_name: "getUploadUrl" }
+          - { folder: "getUploadURL", lambda_name: "getUploadURL" }
           - { folder: "ocrExtraction", lambda_name: "ocrExtraction" }
 
     steps:
@@ -30,7 +30,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::496707410440:role/Programmatic-Deployment
-          aws-region: us-west-2
+          aws-region: us-west-1
 
       - name: Update Lambda ${{ matrix.fn.lambda_name }}
         run: |
