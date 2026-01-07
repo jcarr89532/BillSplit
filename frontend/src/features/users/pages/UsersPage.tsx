@@ -8,7 +8,7 @@ export const UsersPage: React.FC = () => {
   const navigate = useNavigate();
 
   const handleBack = () => {
-    navigate('/');
+    navigate('/receipts');
   };
 
   return (

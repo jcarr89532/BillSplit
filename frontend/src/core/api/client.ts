@@ -1,4 +1,3 @@
-// Simple generic API client for GET and POST requests
 import { API_CONFIG } from './config';
 
 export interface ApiResponse<T = any> {
@@ -49,12 +48,18 @@ export class ApiClient {
     const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
     try {
+      // Don't set Content-Type for FormData - browser will set it with boundary
+      const isFormData = options.body instanceof FormData;
+      const headers = isFormData
+        ? { ...options.headers }
+        : {
+            ...this.defaultHeaders,
+            ...options.headers,
+          };
+      
       const response = await fetch(fullUrl, {
         ...options,
-        headers: {
-          ...this.defaultHeaders,
-          ...options.headers,
-        },
+        headers,
         signal: controller.signal,
       });
 
@@ -105,9 +110,16 @@ export class ApiClient {
     data?: any,
     config?: RequestConfig
   ): Promise<ApiResponse<T>> {
+    // Don't stringify FormData - let browser handle it
+    const body = data instanceof FormData 
+      ? data 
+      : data 
+        ? JSON.stringify(data) 
+        : undefined;
+    
     return this.makeRequest<T>(url, {
       method: 'POST',
-      body: data ? JSON.stringify(data) : undefined,
+      body,
       ...config,
     });
   }
@@ -133,12 +145,18 @@ export class ApiClient {
   }
 }
 
-// Create default instance using config
+// Default API client instance
 export const apiClient = new ApiClient({
   baseURL: API_CONFIG.BASE_URL,
   headers: API_CONFIG.DEFAULT_HEADERS,
   timeout: API_CONFIG.TIMEOUT
 });
 
-// Export individual methods for convenience
+// AWS API Gateway client instance
+export const awsClient = new ApiClient({
+  baseURL: import.meta.env.VITE_AWS_API_BASE_URL || 'https://api.example.com',
+  timeout: API_CONFIG.TIMEOUT
+});
+
+// Convenience exports
 export const { get, post } = apiClient;

@@ -53,7 +53,7 @@ export const ReceiptUpload: React.FC = () => {
   //   const formData = new FormData();
   //   formData.append('image', file);
   //   
-  //   const response = await apiClient.post('/receipts/upload', formData);
+  //   const response = await awsClient.post('/receipts/upload', formData);
   //   return response.data;
   // };
 

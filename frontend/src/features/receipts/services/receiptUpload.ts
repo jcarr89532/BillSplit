@@ -1,4 +1,4 @@
-import { apiClient, ApiClient } from '../../../core/api';
+import { awsClient, ApiClient } from '../../../core/api';
 
 import type { 
   ReceiptUploadResponse, 
@@ -17,7 +17,7 @@ export class ReceiptUploadService {
     
     // Create a custom API client instance without default Content-Type for FormData
     const customClient = new ApiClient({
-      baseURL: apiClient.getBaseURL(),
+      baseURL: awsClient.getBaseURL(),
       headers: {
         // Don't include Content-Type - let browser set it for FormData
       },
@@ -33,7 +33,7 @@ export class ReceiptUploadService {
 
   // Get receipt by ID
   async getReceipt(receiptId: string): Promise<ReceiptUploadResponse> {
-    const response = await apiClient.get<ReceiptUploadResponse>(
+    const response = await awsClient.get<ReceiptUploadResponse>(
       `${this.baseEndpoint}/${receiptId}`
     );
 
@@ -45,7 +45,7 @@ export class ReceiptUploadService {
     receiptId: string, 
     updateData: ReceiptUpdateRequest
   ): Promise<ReceiptUpdateResponse> {
-    const response = await apiClient.post<ReceiptUpdateResponse>(
+    const response = await awsClient.post<ReceiptUpdateResponse>(
       `${this.baseEndpoint}/${receiptId}/update`,
       updateData
     );
@@ -55,12 +55,12 @@ export class ReceiptUploadService {
 
   // Delete receipt
   async deleteReceipt(receiptId: string): Promise<void> {
-    await apiClient.post(`${this.baseEndpoint}/${receiptId}/delete`);
+    await awsClient.post(`${this.baseEndpoint}/${receiptId}/delete`);
   }
 
   // Get all receipts for current user
   async getUserReceipts(): Promise<ReceiptUploadResponse[]> {
-    const response = await apiClient.get<ReceiptUploadResponse[]>(
+    const response = await awsClient.get<ReceiptUploadResponse[]>(
       `${this.baseEndpoint}/user`
     );
 
@@ -69,13 +69,13 @@ export class ReceiptUploadService {
 
   // Test connection to backend
   async testConnection(): Promise<any> {
-    const response = await apiClient.post('/hello-world', 'test');
+    const response = await awsClient.post('/hello-world', 'test');
     return response.data;
   }
 
   // Get base URL for debugging
   getBaseURL(): string {
-    return apiClient.getBaseURL();
+    return awsClient.getBaseURL();
   }
 }
 
