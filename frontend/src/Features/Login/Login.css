@@ -1,0 +1,53 @@
+.login-container {
+  min-height: 100vh;
+  background-color: #2d3748;
+  color: #a0aec0;
+}
+
+.login-layout {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-top-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-content {
+  text-align: center;
+}
+
+.login-icon-wrapper {
+  margin-bottom: 2rem;
+}
+
+.login-icon {
+  width: 250px;
+  height: 250px;
+  color: #a0aec0;
+  margin: 0 auto;
+}
+
+.login-title {
+  font-size: 3.75rem;
+  font-weight: 300;
+  margin-bottom: 1rem;
+  color: #a0aec0;
+}
+
+.login-subtitle {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  color: #a0aec0;
+}
+
+.login-bottom-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

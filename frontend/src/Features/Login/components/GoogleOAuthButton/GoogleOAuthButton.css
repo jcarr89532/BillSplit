@@ -1,0 +1,75 @@
+.google-oauth-container {
+  width: 25%;
+  padding: 0 2rem;
+}
+
+.google-oauth-error {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background-color: rgba(127, 29, 29, 0.5);
+  border-radius: 0.5rem;
+  max-width: 28rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.google-oauth-error-text {
+  color: #fca5a5;
+}
+
+.google-oauth-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background-color: #374151;
+  color: #a0aec0;
+  transition: background-color 0.3s;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+}
+
+.google-oauth-button:hover {
+  background-color: #4b5563;
+}
+
+.google-oauth-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.google-oauth-button-text {
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+.google-oauth-spinner {
+  animation: spin 1s linear infinite;
+  border-radius: 9999px;
+  height: 1.5rem;
+  width: 1.5rem;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.google-oauth-hint {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #718096;
+}
+
+.google-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
