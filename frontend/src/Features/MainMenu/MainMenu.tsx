@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Receipt as ReceiptIcon, Camera, Upload } from 'lucide-react';
+import { awsApi } from '../../api/api';
 import './MainMenu.css';
 
 interface MainMenuProps {
@@ -56,6 +57,7 @@ export const MainMenu: React.FC<MainMenuProps> = ({ onImageUpload }) => {
             </div>
             <h1 className="main-menu-title">Receipt Splitter</h1>
             <p className="main-menu-subtitle">Split bills with friends</p>
+            <button onClick={() => awsApi.getUploadURL()} style={{ marginTop: '1rem', padding: '0.5rem 1rem', fontSize: '0.75rem' }}>Test Upload URL</button>
             {uploading && (
               <div className="main-menu-status main-menu-status-uploading">
                 <p className="main-menu-status-uploading-text">Processing receipt...</p>

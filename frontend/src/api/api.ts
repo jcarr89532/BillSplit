@@ -15,18 +15,6 @@ export const createSupabaseClient = () => {
 };
 
 // ============================================================================
-// AWS Client
-// ============================================================================
-
-export const awsClient = new ApiClient({
-  baseURL: API_CONFIG.AWS_BASE_URL,
-  headers: API_CONFIG.DEFAULT_HEADERS,
-  timeout: API_CONFIG.TIMEOUT
-});
-
-export const { get, post } = awsClient;
-
-// ============================================================================
 // Supabase API Calls
 // ============================================================================
 
@@ -78,6 +66,22 @@ export const supabaseAuth = {
 };
 
 // ============================================================================
+// AWS Client
+// ============================================================================
+
+export const awsClient = new ApiClient({
+  baseURL: API_CONFIG.AWS_BASE_URL,
+  headers: API_CONFIG.DEFAULT_HEADERS,
+  timeout: API_CONFIG.TIMEOUT,
+  getToken: async () => {
+    const session = await supabaseAuth.getSession();
+    return session?.access_token || null;
+  }
+});
+
+export const { get, post } = awsClient;
+
+// ============================================================================
 // AWS API Calls
 // ============================================================================
 
@@ -90,6 +94,10 @@ export const awsApi = {
 
   async getReceipt(receiptId: string) {
     return awsClient.get(`/receipts/${receiptId}`);
+  },
+
+  async getUploadURL() {
+    return awsClient.get(`/getUploadURL`);
   },
 
   async updateReceipt(receiptId: string, data: any) {
