@@ -8,6 +8,7 @@ export interface RequestConfig {
   headers?: Record<string, string>;
   timeout?: number;
   baseURL?: string;
+  getToken?: () => Promise<string | null>;
 }
 
 export class ApiError extends Error {
@@ -26,6 +27,7 @@ export class ApiClient {
   private baseURL: string;
   private defaultHeaders: Record<string, string>;
   private timeout: number;
+  private getToken?: () => Promise<string | null>;
 
   constructor(config: RequestConfig = {}) {
     this.baseURL = config.baseURL || 'http://localhost:3001/api';
@@ -34,6 +36,7 @@ export class ApiClient {
       ...config.headers,
     };
     this.timeout = config.timeout || 10000;
+    this.getToken = config.getToken;
   }
 
   async get<T = any>(url: string, config?: RequestConfig): Promise<ApiResponse<T>> {
@@ -68,9 +71,17 @@ export class ApiClient {
 
     try {
       const isFormData = options.body instanceof FormData;
-      const headers = isFormData
+      let headers = isFormData
         ? { ...options.headers }
         : { ...this.defaultHeaders, ...options.headers };
+
+      // Automatically inject JWT token if getToken is provided
+      if (this.getToken) {
+        const token = await this.getToken();
+        if (token) {
+          headers = { ...headers, 'Authorization': `Bearer ${token}` };
+        }
+      }
 
       const response = await fetch(fullUrl, {
         ...options,
