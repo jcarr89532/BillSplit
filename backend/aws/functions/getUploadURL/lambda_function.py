@@ -8,7 +8,7 @@ from dataclasses import asdict
 
 service = PresignService()
 
-def handler(event, _):
+def lambda_handler(event, _):
     try:
         qs = event.get("queryStringParameters") or {}
         req = PresignRequest(
