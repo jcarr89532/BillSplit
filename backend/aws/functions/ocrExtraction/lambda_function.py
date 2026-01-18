@@ -7,7 +7,7 @@ from dataclasses import asdict
 
 service = OcrService()
 
-def handler(event, _):
+def lambda_handler(event, _):
     try:
         body = json.loads(event.get("body") or "{}")
         
