@@ -97,14 +97,10 @@ export const awsApi = {
   },
 
   async getUploadURL() {
-    return awsClient.get(`/getUploadURL`);
+    return awsClient.get(`/get-upload-url`);
   },
 
-  async updateReceipt(receiptId: string, data: any) {
-    return awsClient.post(`/receipts/${receiptId}/update`, data);
-  },
-
-  async deleteReceipt(receiptId: string) {
-    return awsClient.post(`/receipts/${receiptId}/delete`);
+  async extract() {
+    return awsClient.get(`/extract`);
   },
 };
