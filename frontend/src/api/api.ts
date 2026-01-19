@@ -86,16 +86,6 @@ export const { get, post } = awsClient;
 // ============================================================================
 
 export const awsApi = {
-  async uploadReceipt(imageFile: File) {
-    const formData = new FormData();
-    formData.append('image', imageFile);
-    return awsClient.post('/receipts/upload', formData);
-  },
-
-  async getReceipt(receiptId: string) {
-    return awsClient.get(`/receipts/${receiptId}`);
-  },
-
   async getUploadURL() {
     return awsClient.get(`/get-upload-url`);
   },
