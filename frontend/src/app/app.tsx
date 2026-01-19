@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate } from 'r
 import { Login } from '../Features/Login/Login';
 import { MainMenu } from '../Features/MainMenu/MainMenu';
 import { ItemList } from '../Features/ItemList/ItemList';
-import { supabaseAuth } from '../api/api';
+import { supabaseAuth, awsApi } from '../api/api';
 
 function AppContent() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -38,18 +38,9 @@ function AppContent() {
   };
 
   const handleImageUpload = async (file: File) => {
-    const receipt = {
-      id: Date.now().toString(),
-      imageUrl: URL.createObjectURL(file),
-      items: [
-        { id: '1', name: 'Sample Item 1', price: 5.99, quantity: 1 },
-        { id: '2', name: 'Sample Item 2', price: 3.50, quantity: 2 }
-      ],
-      tax: 1.20,
-      tip: 2.00,
-      total: 12.69,
-    };
-    setCurrentReceipt(receipt);
+    let response = "temporary response"
+    
+    setCurrentReceipt(response);
     navigate('/itemList');
   };
 
