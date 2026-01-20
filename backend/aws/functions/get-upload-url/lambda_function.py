@@ -12,7 +12,7 @@ def lambda_handler(event, _):
     try:
         qs = event.get("queryStringParameters") or {}
         req = PresignRequest(
-            filename=qs.get("filename", "upload1.bin"),
+            filename=qs.get("filename", "upload.bin"),
             prefix=qs.get("prefix", "receipts"),
             expires=int(qs.get("expires", 300)),
         )
