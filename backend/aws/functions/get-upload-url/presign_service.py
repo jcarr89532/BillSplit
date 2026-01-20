@@ -10,9 +10,6 @@ class PresignService:
         self.s3 = boto3.client(
             "s3", 
             region_name=self.config.region,
-            endpoint_url=self.config.s3_endpoint_url,
-            aws_access_key_id=self.config.aws_access_key_id,
-            aws_secret_access_key=self.config.aws_secret_access_key
         )
 
     def presign_put(self, req: PresignRequest) -> PresignResponse:

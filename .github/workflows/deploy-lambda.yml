@@ -14,8 +14,8 @@ jobs:
     strategy:
       matrix:
         fn:
-          - { folder: "getUploadURL", lambda_name: "getUploadURL" }
-          - { folder: "ocrExtraction", lambda_name: "ocrExtraction" }
+          - { folder: "get-upload-url", lambda_name: "get-upload-url" }
+          - { folder: "extract", lambda_name: "extract" }
 
     steps:
       - name: Checkout
