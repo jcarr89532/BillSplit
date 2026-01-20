@@ -7,6 +7,8 @@ from dataclasses import asdict
 
 service = OcrService()
 
+#TODO: Function to extract text from a receipt image (this is just boiler plate code so will need to be updated))
+
 def lambda_handler(event, _):
     try:
         body = json.loads(event.get("body") or "{}")

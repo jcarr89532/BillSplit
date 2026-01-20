@@ -38,6 +38,17 @@ function AppContent() {
   };
 
   const handleImageUpload = async (file: File) => {
+    /* TODO: 
+    1. get presigned url 
+      const presignedUrl = await awsApi.getUploadURL();
+    
+    2. upload file to s3 using presigned url
+
+    3. extract text from receipt image using aws textract (awsApi.extract())
+
+    4. setCurrentReceipt(response); -> set whatever response you get to currentReceipt
+    */
+
     let response = "temporary response"
     
     setCurrentReceipt(response);
