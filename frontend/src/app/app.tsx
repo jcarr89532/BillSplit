@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate } from 'r
 import { Login } from '../Features/Login/Login';
 import { MainMenu } from '../Features/MainMenu/MainMenu';
 import { ItemList } from '../Features/ItemList/ItemList';
-import { supabaseAuth, awsApi } from '../api/api';
+import { supabaseAuth } from '../api/api';
 
 function AppContent() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -37,7 +37,7 @@ function AppContent() {
     navigate('/');
   };
 
-  const handleImageUpload = async (file: File) => {
+  const handleImageUpload = async (_file: File) => {
     let response = "temporary response"
     
     setCurrentReceipt(response);
