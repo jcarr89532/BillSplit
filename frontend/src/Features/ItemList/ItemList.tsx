@@ -1,13 +1,6 @@
 import React from 'react';
 import './ItemList.css';
 
-interface Item {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-}
-
 interface ItemListProps {
   receipt: string;
   onBack: () => void;
