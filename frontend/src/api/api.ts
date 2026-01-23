@@ -10,8 +10,11 @@ if (!API_CONFIG.SUPABASE_URL || !API_CONFIG.SUPABASE_KEY) {
   throw new Error('Missing Supabase environment variables');
 }
 
+// Create a single client instance to maintain PKCE state across OAuth flow
+const supabaseClient = createBrowserClient(API_CONFIG.SUPABASE_URL!, API_CONFIG.SUPABASE_KEY!);
+
 export const createSupabaseClient = () => {
-  return createBrowserClient(API_CONFIG.SUPABASE_URL!, API_CONFIG.SUPABASE_KEY!);
+  return supabaseClient;
 };
 
 // ============================================================================
@@ -21,8 +24,7 @@ export const createSupabaseClient = () => {
 export const supabaseAuth = {
 
   async signInWithGoogle() {
-    const redirectUrl = window.location.hostname === 'localhost' 
-    ? 'http://localhost:5173/auth/callback' : 'https://billsplit25.netlify.app/auth/callback';
+    const redirectUrl = `${window.location.origin}/auth/callback`;
 
     const supabase = createSupabaseClient();
     const { error } = await supabase.auth.signInWithOAuth({
