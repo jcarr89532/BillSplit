@@ -21,8 +21,7 @@ export const createSupabaseClient = () => {
 export const supabaseAuth = {
 
   async signInWithGoogle() {
-    const redirectUrl = window.location.hostname === 'localhost' 
-    ? 'http://localhost:5173/auth/callback' : 'https://billsplit25.netlify.app/auth/callback';
+    const redirectUrl = `${window.location.origin}/auth/callback`;
 
     const supabase = createSupabaseClient();
     const { error } = await supabase.auth.signInWithOAuth({
