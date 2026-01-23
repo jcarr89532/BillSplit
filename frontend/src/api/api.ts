@@ -10,8 +10,11 @@ if (!API_CONFIG.SUPABASE_URL || !API_CONFIG.SUPABASE_KEY) {
   throw new Error('Missing Supabase environment variables');
 }
 
+// Create a single client instance to maintain PKCE state across OAuth flow
+const supabaseClient = createBrowserClient(API_CONFIG.SUPABASE_URL!, API_CONFIG.SUPABASE_KEY!);
+
 export const createSupabaseClient = () => {
-  return createBrowserClient(API_CONFIG.SUPABASE_URL!, API_CONFIG.SUPABASE_KEY!);
+  return supabaseClient;
 };
 
 // ============================================================================
