@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate } from 'r
 import { Login } from '../Features/Login/Login';
 import { MainMenu } from '../Features/MainMenu/MainMenu';
 import { ItemList } from '../Features/ItemList/ItemList';
+import { AuthCallback } from '../Features/Login/components/AuthCallback/AuthCallback';
 import { supabaseAuth } from '../api/api';
 
 function AppContent() {
@@ -62,6 +63,10 @@ function AppContent() {
       <Route
         path="/login"
         element={isAuthenticated ? <Navigate to="/" replace /> : <Login onAuthSuccess={handleAuthSuccess} />}
+      />
+      <Route
+        path="/auth/callback"
+        element={<AuthCallback />}
       />
       <Route
         path="/"
