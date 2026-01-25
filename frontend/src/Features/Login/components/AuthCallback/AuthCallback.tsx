@@ -1,40 +1,9 @@
-<<<<<<< HEAD
-import { useEffect } from 'react';
-=======
 import { useEffect, useRef } from 'react';
->>>>>>> origin/main
 import { useNavigate } from 'react-router-dom';
 import { supabaseAuth } from '../../../../api/api';
 
 export function AuthCallback() {
   const navigate = useNavigate();
-<<<<<<< HEAD
-
-  useEffect(() => {
-    const handleCallback = async () => {
-      try {
-        // Wait for Supabase to process the OAuth callback
-        await new Promise(resolve => setTimeout(resolve, 100));
-        
-        // Get the session (Supabase automatically processes hash fragments)
-        const session = await supabaseAuth.getSession();
-        
-        if (session) {
-          // Clean up URL hash and redirect to home
-          window.history.replaceState({}, '', '/');
-          navigate('/', { replace: true });
-        } else {
-          // No session found, redirect to login
-          navigate('/login', { replace: true });
-        }
-      } catch (error) {
-        console.error('Auth callback error:', error);
-        navigate('/login', { replace: true });
-      }
-    };
-
-    handleCallback();
-=======
   const hasProcessed = useRef(false);
 
   useEffect(() => {
@@ -77,7 +46,6 @@ export function AuthCallback() {
     checkSession();
 
     return () => subscription.unsubscribe();
->>>>>>> origin/main
   }, [navigate]);
 
   return (

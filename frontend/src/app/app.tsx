@@ -1,17 +1,28 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate, useLocation } from 'react-router-dom';
 import { Login } from '../Features/Login/Login';
 import { MainMenu } from '../Features/MainMenu/MainMenu';
 import { ItemList } from '../Features/ItemList/ItemList';
-import { supabaseAuth, awsApi } from '../api/api';
+import { AuthCallback } from '../Features/Login/components/AuthCallback/AuthCallback';
+import { supabaseAuth } from '../api/api';
+
+const CALLBACK_ROUTE = '/auth/callback';
 
 function AppContent() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [currentReceipt, setCurrentReceipt] = useState<any>(null);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isCallbackRoute = location.pathname === CALLBACK_ROUTE;
 
   useEffect(() => {
+    if (isCallbackRoute) {
+      setLoading(false);
+      return;
+    }
+
     const checkAuth = async () => {
       const session = await supabaseAuth.getSession();
       setIsAuthenticated(!!session);
@@ -20,35 +31,25 @@ function AppContent() {
         navigate('/login');
       }
     };
+
     checkAuth();
 
     const subscription = supabaseAuth.onAuthStateChange((session) => {
       setIsAuthenticated(!!session);
-      if (!session) {
+      if (!session && !isCallbackRoute) {
         navigate('/login');
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, isCallbackRoute]);
 
   const handleAuthSuccess = () => {
     setIsAuthenticated(true);
     navigate('/');
   };
 
-  const handleImageUpload = async (file: File) => {
-    /* TODO: 
-    1. get presigned url 
-      const presignedUrl = await awsApi.getUploadURL();
-    
-    2. upload file to s3 using presigned url
-
-    3. extract text from receipt image using aws textract (awsApi.extract())
-
-    4. setCurrentReceipt(response); -> set whatever response you get to currentReceipt
-    */
-
+  const handleImageUpload = async (_file: File) => {
     let response = "temporary response"
     
     setCurrentReceipt(response);
@@ -73,6 +74,10 @@ function AppContent() {
       <Route
         path="/login"
         element={isAuthenticated ? <Navigate to="/" replace /> : <Login onAuthSuccess={handleAuthSuccess} />}
+      />
+      <Route
+        path="/auth/callback"
+        element={<AuthCallback />}
       />
       <Route
         path="/"
