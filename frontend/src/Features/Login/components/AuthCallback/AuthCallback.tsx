@@ -1,9 +1,14 @@
+<<<<<<< HEAD
 import { useEffect } from 'react';
+=======
+import { useEffect, useRef } from 'react';
+>>>>>>> origin/main
 import { useNavigate } from 'react-router-dom';
 import { supabaseAuth } from '../../../../api/api';
 
 export function AuthCallback() {
   const navigate = useNavigate();
+<<<<<<< HEAD
 
   useEffect(() => {
     const handleCallback = async () => {
@@ -29,6 +34,50 @@ export function AuthCallback() {
     };
 
     handleCallback();
+=======
+  const hasProcessed = useRef(false);
+
+  useEffect(() => {
+    const handleSuccess = () => {
+      if (hasProcessed.current) return;
+      hasProcessed.current = true;
+      window.history.replaceState({}, '', '/');
+      navigate('/', { replace: true });
+    };
+
+    const handleFailure = () => {
+      if (hasProcessed.current) return;
+      hasProcessed.current = true;
+      navigate('/login', { replace: true });
+    };
+
+    // Listen for auth state changes (fires when code is exchanged)
+    const subscription = supabaseAuth.onAuthStateChange((session) => {
+      if (session) {
+        handleSuccess();
+      } else if (hasProcessed.current === false) {
+        // Only handle failure if we haven't processed yet
+        setTimeout(handleFailure, 1500);
+      }
+    });
+
+    // Retry checking session (fallback for code exchange)
+    const checkSession = async () => {
+      for (let i = 0; i < 5; i++) {
+        await new Promise(resolve => setTimeout(resolve, 300));
+        const session = await supabaseAuth.getSession();
+        if (session) {
+          handleSuccess();
+          return;
+        }
+      }
+      handleFailure();
+    };
+
+    checkSession();
+
+    return () => subscription.unsubscribe();
+>>>>>>> origin/main
   }, [navigate]);
 
   return (
