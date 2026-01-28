@@ -92,11 +92,11 @@ export const { get, post } = awsClient;
 // ============================================================================
 
 export const awsApi = {
-  async getUploadURL() {
+  async getUploadURL(name: string) {
     return awsClient.get(`/get-upload-url`);
   },
 
-  async extract() {
-    return awsClient.get(`/extract`);
+  async extract(bucket: any, key: any) {
+    return awsClient.post(`/extract`);
   },
 };
