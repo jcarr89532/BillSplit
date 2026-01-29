@@ -96,7 +96,7 @@ export const awsApi = {
     return awsClient.get(`/get-upload-url`);
   },
 
-  async extract(bucket: any, key: any) {
-    return awsClient.post(`/extract`);
+  async extract(bucket: string, key: string) {
+    return awsClient.post(`/extract`, { bucket, key });
   },
 };

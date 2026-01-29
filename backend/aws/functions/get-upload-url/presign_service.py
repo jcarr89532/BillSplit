@@ -29,7 +29,7 @@ class PresignService:
 
         url = self.s3.generate_presigned_url(
             "put_object",
-            Params={"Bucket": self.config.bucket, "Key": key, "ContentType": content_type},
+            Params={"Bucket": self.config.bucket, "Key": key},
             ExpiresIn=exp,
         )
 
