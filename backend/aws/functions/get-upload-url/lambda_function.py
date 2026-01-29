@@ -1,17 +1,25 @@
 import json
 from http import HTTPStatus
+from dataclasses import asdict
+
 from DTO.presign_request_dto import PresignRequest
 from DTO.http_response import HttpResponse
 from presign_service import PresignService
 from config import AppConfig
-from dataclasses import asdict
+
+from daily_quota import enforce_daily_limit
 
 service = PresignService()
 
 
-#TODO: Function to get pre-signed URL for uploading a file to S3
 def lambda_handler(event, _):
     try:
+        if not enforce_daily_limit():
+            return HttpResponse(
+                statusCode=HTTPStatus.TOO_MANY_REQUESTS,
+                body={"error": "Daily request limit reached"},
+            ).to_dict()
+
         qs = event.get("queryStringParameters") or {}
         req = PresignRequest(
             filename=qs.get("filename", "upload.bin"),
