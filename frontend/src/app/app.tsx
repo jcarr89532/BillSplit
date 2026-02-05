@@ -4,7 +4,7 @@ import { Login } from '../Features/Login/Login';
 import { MainMenu } from '../Features/MainMenu/MainMenu';
 import { ItemList } from '../Features/ItemList/ItemList';
 import { AuthCallback } from '../Features/Login/components/AuthCallback/AuthCallback';
-import { supabaseAuth } from '../api/api';
+import { supabaseAuth, awsApi } from '../api/api';
 
 const CALLBACK_ROUTE = '/auth/callback';
 
@@ -49,11 +49,37 @@ function AppContent() {
     navigate('/');
   };
 
-  const handleImageUpload = async (_file: File) => {
-    let response = "temporary response"
-    
-    setCurrentReceipt(response);
-    navigate('/itemList');
+const handleImageUpload = async (file: File) => {
+    try {
+      // 1. Get presigned URL
+      const { data } = await awsApi.getUploadURL(file.name);
+      const { url: presignedUrl, bucket, key } = data;
+      console.log('Presigned URL:', presignedUrl);
+      
+      // 2. Upload file to S3 using presigned URL
+      // Convert File to Blob to prevent browser from auto-adding Content-Type
+      const fileBlob = new Blob([file]);
+      
+      const uploadResponse = await fetch(presignedUrl, {
+        method: 'PUT',
+        body: fileBlob,
+        headers: {},
+      });
+
+      if (uploadResponse.status !== 200) {
+        throw new Error(`Failed to upload file to S3: ${uploadResponse.status}`);
+      }
+
+      // 3. Extract text from receipt image using AWS Textract
+      const response = await awsApi.extract(bucket, key);
+
+      // 4. Set the response to currentReceipt
+      setCurrentReceipt(response?.data);
+      navigate('/itemList');
+    } catch (error) {
+      console.error('Error processing receipt:', error);
+      // You might want to show an error message to the user here
+    }
   };
 
   const handleBack = () => {

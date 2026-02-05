@@ -9,8 +9,14 @@ class HttpResponse:
     headers: Optional[Dict] = None
 
     def to_dict(self):
+        default_headers = {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization"
+        }
         return {
             "statusCode": self.statusCode,
-            "headers": self.headers or {"Content-Type": "application/json"},
+            "headers": self.headers or default_headers,
             "body": json.dumps(self.body),
         }
