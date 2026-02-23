@@ -3,7 +3,7 @@ import { verifyAuth } from "./auth.ts";
 import { formatBillsResponse, createErrorResponse } from "./response.ts";
 
 // @ts-ignore - Deno is available in Supabase Edge Functions runtime
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   // Handle CORS preflight
   const corsResponse = handleCors(req);
   if (corsResponse) return corsResponse;
@@ -20,8 +20,8 @@ Deno.serve(async (req) => {
   const { data, error } = await supabase.rpc("get_my_bills");
 
   if (error) {
-    return createErrorResponse(error.message, 400);
+    return createErrorResponse(error.message, 400, req);
   }
 
-  return formatBillsResponse(data);
+  return formatBillsResponse(data, req);
 });

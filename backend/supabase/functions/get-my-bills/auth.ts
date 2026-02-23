@@ -1,8 +1,8 @@
 // @ts-ignore - Deno-style import works in Supabase Edge Functions runtime
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { corsHeaders } from "./cors.ts";
+import { createClient, type User, type SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { getCorsHeaders } from "./cors.ts";
 
-export async function verifyAuth(req: Request): Promise<{ user: any; supabase: any } | { error: Response }> {
+export async function verifyAuth(req: Request): Promise<{ user: User; supabase: SupabaseClient } | { error: Response }> {
   const authHeader = req.headers.get("Authorization") || 
                      req.headers.get("authorization") ||
                      "";
@@ -13,7 +13,7 @@ export async function verifyAuth(req: Request): Promise<{ user: any; supabase: a
         JSON.stringify({ error: "Missing Authorization header" }), 
         {
           status: 401,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
         }
       )
     };
@@ -27,7 +27,7 @@ export async function verifyAuth(req: Request): Promise<{ user: any; supabase: a
         JSON.stringify({ error: "Invalid token format" }), 
         {
           status: 401,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
         }
       )
     };
@@ -59,7 +59,7 @@ export async function verifyAuth(req: Request): Promise<{ user: any; supabase: a
         }), 
         {
           status: 401,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
         }
       )
     };

@@ -1,6 +1,6 @@
-import { corsHeaders } from "./cors.ts";
+import { getCorsHeaders } from "./cors.ts";
 
-export function formatBillsResponse(data: any[]): Response {
+export function formatBillsResponse(data: any[], req: Request): Response {
   const itemizedBills = (data ?? []).map((b: any) => {
     const d = b?.data ?? {};
     return {
@@ -10,13 +10,13 @@ export function formatBillsResponse(data: any[]): Response {
   });
 
   return new Response(JSON.stringify(itemizedBills), {
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
+    headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
   });
 }
 
-export function createErrorResponse(message: string, status: number = 400): Response {
+export function createErrorResponse(message: string, status: number, req: Request): Response {
   return new Response(JSON.stringify({ error: message }), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
+    headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
   });
 }
