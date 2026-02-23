@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { Receipt as ReceiptIcon, Camera, Upload } from 'lucide-react';
+import { Receipt as ReceiptIcon, Upload, History } from 'lucide-react';
 import './MainMenu.css';
 
 interface MainMenuProps {
   onImageUpload: (file: File) => void;
+  onHistoryClick: () => void;
 }
 
-export const MainMenu: React.FC<MainMenuProps> = ({ onImageUpload }) => {
+export const MainMenu: React.FC<MainMenuProps> = ({ onImageUpload, onHistoryClick }) => {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,22 +24,12 @@ export const MainMenu: React.FC<MainMenuProps> = ({ onImageUpload }) => {
     }
   };
 
-  const openCamera = () => {
+  const openImagePicker = () => {
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
+    // On mobile devices, this will give users the option to choose camera or photo library
     input.capture = 'environment';
-    input.onchange = (event: any) => {
-      const file = event.target.files?.[0];
-      if (file) handleImageSelect(file);
-    };
-    input.click();
-  };
-
-  const openFileUpload = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
     input.onchange = (event: any) => {
       const file = event.target.files?.[0];
       if (file) handleImageSelect(file);
@@ -69,13 +60,13 @@ export const MainMenu: React.FC<MainMenuProps> = ({ onImageUpload }) => {
           </div>
         </div>
         <div className="main-menu-bottom-section">
-          <div className="main-menu-option" onClick={openCamera}>
-            <Camera className="main-menu-option-icon" />
-            <span className="main-menu-option-text">Camera</span>
-          </div>
-          <div className="main-menu-option" onClick={openFileUpload}>
+          <div className="main-menu-option" onClick={openImagePicker}>
             <Upload className="main-menu-option-icon" />
-            <span className="main-menu-option-text">Upload</span>
+            <span className="main-menu-option-text">Upload Receipt</span>
+          </div>
+          <div className="main-menu-option" onClick={onHistoryClick}>
+            <History className="main-menu-option-icon" />
+            <span className="main-menu-option-text">History</span>
           </div>
         </div>
       </div>

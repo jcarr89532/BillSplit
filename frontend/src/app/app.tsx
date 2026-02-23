@@ -3,8 +3,10 @@ import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate, useLocat
 import { Login } from '../Features/Login/Login';
 import { MainMenu } from '../Features/MainMenu/MainMenu';
 import { ItemList } from '../Features/ItemList/ItemList';
+import { HistoryList } from '../Features/HistoryList/HistoryList';
 import { AuthCallback } from '../Features/Login/components/AuthCallback/AuthCallback';
-import { supabaseAuth, awsApi } from '../api/api';
+import { supabaseAuth, awsApi, supabaseFunctions } from '../api/api';
+import type { ItemizedBill } from '../Features/ItemList/models/ItemizedBill';
 
 const CALLBACK_ROUTE = '/auth/callback';
 
@@ -12,6 +14,7 @@ function AppContent() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [currentReceipt, setCurrentReceipt] = useState<any>(null);
+  const [bills, setBills] = useState<ItemizedBill[]>([]);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -87,6 +90,17 @@ const handleImageUpload = async (file: File) => {
     navigate('/');
   };
 
+  const onHistoryClick = async () => {
+    try {
+      const data = await supabaseFunctions.getMyBills();
+      const bills = data as ItemizedBill[];
+      setBills(bills);
+      navigate('/history');
+    } catch (error) {
+      console.error('Error fetching bills:', error);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#2d3748' }}>
@@ -107,11 +121,15 @@ const handleImageUpload = async (file: File) => {
       />
       <Route
         path="/"
-        element={isAuthenticated ? <MainMenu onImageUpload={handleImageUpload} /> : <Navigate to="/login" replace />}
+        element={isAuthenticated ? <MainMenu onImageUpload={handleImageUpload} onHistoryClick={onHistoryClick} /> : <Navigate to="/login" replace />}
       />
       <Route
         path="/itemList"
         element={currentReceipt ? <ItemList receipt={currentReceipt} onBack={handleBack} /> : <Navigate to="/" replace />}
+      />
+      <Route
+        path="/history"
+        element={isAuthenticated ? <HistoryList bills={bills} onBack={handleBack} /> : <Navigate to="/login" replace />}
       />
     </Routes>
   );
