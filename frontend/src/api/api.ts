@@ -26,8 +26,7 @@ export const supabaseAuth = {
   async signInWithGoogle() {
     const redirectUrl = `${window.location.origin}/auth/callback`;
 
-    const supabase = createSupabaseClient();
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { error } = await supabaseClient.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: redirectUrl },
     });
@@ -35,15 +34,13 @@ export const supabaseAuth = {
   },
 
   async signOut() {
-    const supabase = createSupabaseClient();
-    const { error } = await supabase.auth.signOut();
+    const { error } = await supabaseClient.auth.signOut();
     if (error) throw new Error(error.message);
   },
 
   async getSession() {
     try {
-      const supabase = createSupabaseClient();
-      const { data: { session }, error } = await supabase.auth.getSession();
+      const { data: { session }, error } = await supabaseClient.auth.getSession();
       if (error) throw new Error(error.message);
       return session;
     } catch {
@@ -53,8 +50,7 @@ export const supabaseAuth = {
 
   async getCurrentUser() {
     try {
-      const supabase = createSupabaseClient();
-      const { data: { user }, error } = await supabase.auth.getUser();
+      const { data: { user }, error } = await supabaseClient.auth.getUser();
       if (error) throw new Error(error.message);
       return user;
     } catch {
@@ -63,12 +59,26 @@ export const supabaseAuth = {
   },
 
   onAuthStateChange(callback: (session: any) => void) {
-    const supabase = createSupabaseClient();
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabaseClient.auth.onAuthStateChange((_event, session) => {
       callback(session);
     });
     return subscription;
   },
+};
+
+// ============================================================================
+// Supabase Edge Functions
+// ============================================================================
+
+export const supabaseFunctions = {
+  async getMyBills() {
+    const { data, error } = await supabaseClient.functions.invoke("get-my-bills", {
+      body: {},
+    });
+
+    if (error) throw error;
+    return data;
+  }
 };
 
 // ============================================================================
