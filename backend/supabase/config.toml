@@ -1,0 +1,2 @@
+[functions.get-my-bills]
+verify_jwt = false

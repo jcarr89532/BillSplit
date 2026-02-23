@@ -28,8 +28,6 @@ export const MainMenu: React.FC<MainMenuProps> = ({ onImageUpload, onHistoryClic
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'image/*';
-    // On mobile devices, this will give users the option to choose camera or photo library
-    input.capture = 'environment';
     input.onchange = (event: any) => {
       const file = event.target.files?.[0];
       if (file) handleImageSelect(file);
