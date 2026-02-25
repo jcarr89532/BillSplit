@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - "backend/supabase/functions/get-my-bills/**"
+      - "backend/supabase/functions/insert-bill/**"
   workflow_dispatch:
 
 jobs:
@@ -24,3 +25,4 @@ jobs:
       - run: |
           cd backend
           supabase functions deploy get-my-bills --project-ref $SUPABASE_PROJECT_ID
+          supabase functions deploy insert-bill --project-ref $SUPABASE_PROJECT_ID
