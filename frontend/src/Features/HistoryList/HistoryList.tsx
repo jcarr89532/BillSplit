@@ -1,18 +1,20 @@
 import React from 'react';
 import './HistoryList.css';
 import type { ItemizedBill } from '../ItemList/models/ItemizedBill';
+import { ArrowLeftIcon } from 'lucide-react';
 
 interface HistoryListProps {
   bills: ItemizedBill[];
   onBack: () => void;
+  onBillClick: (bill: ItemizedBill) => void;
 }
 
-export const HistoryList: React.FC<HistoryListProps> = ({ bills, onBack }) => {
+export const HistoryList: React.FC<HistoryListProps> = ({ bills, onBack, onBillClick }) => {
   return (
     <div className="history-list-container">
       <div className="history-list-wrapper">
         <button className="history-list-back-button" onClick={onBack}>
-          Back
+          <ArrowLeftIcon className="history-list-back-button-icon" />
         </button>
         <div className="history-list-card">
           <h1 className="history-list-title">Bill History</h1>
@@ -22,7 +24,7 @@ export const HistoryList: React.FC<HistoryListProps> = ({ bills, onBack }) => {
             ) : (
               bills.map((bill, index) => (
                 <div key={index} className="history-list-item">
-                  <span className="history-list-item-title">{bill.title}</span>
+                  <span className="history-list-item-title" onClick={() => onBillClick(bill)}>{bill.title}</span>
                 </div>
               ))
             )}

@@ -87,7 +87,16 @@ const handleImageUpload = async (file: File) => {
 
   const handleBack = () => {
     setCurrentReceipt(null);
-    navigate('/');
+    if (location.pathname === '/itemList') {
+      navigate('/history');
+    } else {
+      navigate('/');
+    }
+  };
+
+  const onHistoryBillClick = async (bill: ItemizedBill) => {
+    setCurrentReceipt(bill);
+    navigate('/itemList');
   };
 
   const onHistoryClick = async () => {
@@ -138,7 +147,7 @@ const handleImageUpload = async (file: File) => {
       />
       <Route
         path="/history"
-        element={isAuthenticated ? <HistoryList bills={bills} onBack={handleBack} /> : <Navigate to="/login" replace />}
+        element={isAuthenticated ? <HistoryList bills={bills} onBack={handleBack} onBillClick={onHistoryBillClick} /> : <Navigate to="/login" replace />}
       />
     </Routes>
   );
