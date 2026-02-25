@@ -1,2 +1,5 @@
 [functions.get-my-bills]
 verify_jwt = false
+
+[functions.insert-bill]
+verify_jwt = false
