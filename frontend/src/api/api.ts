@@ -1,6 +1,7 @@
 import { createBrowserClient } from "@supabase/ssr";
-import { ApiClient } from './client';
+import { ApiClient, type ApiResponse } from './client';
 import { API_CONFIG } from './config';
+import type { ItemizedBill } from '../Features/ItemList/models/ItemizedBill';
 
 // ============================================================================
 // Supabase Client
@@ -78,6 +79,15 @@ export const supabaseFunctions = {
 
     if (error) throw error;
     return data;
+  },
+
+  async saveBill(bill: ItemizedBill) {
+    const { data, error } = await supabaseClient.functions.invoke("insert-bill", {
+      body: bill,
+    });
+
+    if (error) throw error;
+    return data;
   }
 };
 
@@ -106,7 +116,7 @@ export const awsApi = {
     return awsClient.get(`/get-upload-url?filename=${encodeURIComponent(name)}`);
   },
 
-  async extract(bucket: string, key: string) {
-    return awsClient.post(`/extract`, { bucket, key });
+  async extract(bucket: string, key: string): Promise<ApiResponse<ItemizedBill>> {
+    return awsClient.post<ItemizedBill>(`/extract`, { bucket, key });
   },
 };

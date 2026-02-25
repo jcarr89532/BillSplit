@@ -13,7 +13,7 @@ const CALLBACK_ROUTE = '/auth/callback';
 function AppContent() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [currentReceipt, setCurrentReceipt] = useState<any>(null);
+  const [currentReceipt, setCurrentReceipt] = useState<ItemizedBill | null>(null);
   const [bills, setBills] = useState<ItemizedBill[]>([]);
   const navigate = useNavigate();
   const location = useLocation();
@@ -77,7 +77,7 @@ const handleImageUpload = async (file: File) => {
       const response = await awsApi.extract(bucket, key);
 
       // 4. Set the response to currentReceipt
-      setCurrentReceipt(response?.data);
+      setCurrentReceipt(response.data);
       navigate('/itemList');
     } catch (error) {
       console.error('Error processing receipt:', error);
@@ -98,6 +98,15 @@ const handleImageUpload = async (file: File) => {
       navigate('/history');
     } catch (error) {
       console.error('Error fetching bills:', error);
+    }
+  };
+
+  const saveBill = async (bill: ItemizedBill) => {
+    try {
+      await supabaseFunctions.saveBill(bill);
+      navigate('/');
+    } catch (error) {
+      console.error('Error saving bill:', error);
     }
   };
 
@@ -125,7 +134,7 @@ const handleImageUpload = async (file: File) => {
       />
       <Route
         path="/itemList"
-        element={currentReceipt ? <ItemList receipt={currentReceipt} onBack={handleBack} /> : <Navigate to="/" replace />}
+        element={currentReceipt ? <ItemList receipt={currentReceipt} onBack={handleBack} onSave={saveBill} /> : <Navigate to="/" replace />}
       />
       <Route
         path="/history"
