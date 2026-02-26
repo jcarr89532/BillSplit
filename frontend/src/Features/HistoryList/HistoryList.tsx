@@ -1,12 +1,12 @@
 import React from 'react';
 import './HistoryList.css';
-import type { ItemizedBill } from '../ItemList/models/ItemizedBill';
+import type { BillSummary } from './models/BillSummary';
 import { ArrowLeftIcon } from 'lucide-react';
 
 interface HistoryListProps {
-  bills: ItemizedBill[];
+  bills: BillSummary[];
   onBack: () => void;
-  onBillClick: (bill: ItemizedBill) => void;
+  onBillClick: (bill: BillSummary) => void;
 }
 
 export const HistoryList: React.FC<HistoryListProps> = ({ bills, onBack, onBillClick }) => {
@@ -22,8 +22,8 @@ export const HistoryList: React.FC<HistoryListProps> = ({ bills, onBack, onBillC
             {bills.length === 0 ? (
               <p className="history-list-empty">No bills found</p>
             ) : (
-              bills.map((bill, index) => (
-                <div key={index} className="history-list-item">
+              bills.map((bill) => (
+                <div key={bill.id} className="history-list-item">
                   <span className="history-list-item-title" onClick={() => onBillClick(bill)}>{bill.title}</span>
                 </div>
               ))

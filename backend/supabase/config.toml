@@ -3,3 +3,9 @@ verify_jwt = false
 
 [functions.insert-bill]
 verify_jwt = false
+
+[functions.get-bill-details]
+verify_jwt = false
+
+[functions.update-bill]
+verify_jwt = false

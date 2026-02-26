@@ -1,0 +1,37 @@
+.item-table-wrapper {
+  margin-bottom: 1rem;
+}
+
+.item-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.item-table thead {
+  background-color: #1f2937;
+}
+
+.item-table th {
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 500;
+  color: #a0aec0;
+  border-bottom: 1px solid #4b5563;
+}
+
+.item-table-row {
+  cursor: pointer;
+  background-color: transparent;
+  transition: background-color 0.2s;
+}
+
+.item-table-row td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #374151;
+  background-color: transparent;
+}
+
+.item-table-row:hover {
+  background-color: #1f2937;
+}
+

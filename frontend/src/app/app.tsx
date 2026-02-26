@@ -7,6 +7,7 @@ import { HistoryList } from '../Features/HistoryList/HistoryList';
 import { AuthCallback } from '../Features/Login/components/AuthCallback/AuthCallback';
 import { supabaseAuth, awsApi, supabaseFunctions } from '../api/api';
 import type { ItemizedBill } from '../Features/ItemList/models/ItemizedBill';
+import type { BillSummary } from '../Features/HistoryList/models/BillSummary';
 
 const CALLBACK_ROUTE = '/auth/callback';
 
@@ -14,7 +15,8 @@ function AppContent() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [currentReceipt, setCurrentReceipt] = useState<ItemizedBill | null>(null);
-  const [bills, setBills] = useState<ItemizedBill[]>([]);
+  const [currentBillID, setCurrentBillID] = useState<string | null>(null);
+  const [bills, setBills] = useState<BillSummary[]>([]);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -54,13 +56,10 @@ function AppContent() {
 
 const handleImageUpload = async (file: File) => {
     try {
-      // 1. Get presigned URL
       const { data } = await awsApi.getUploadURL(file.name);
       const { url: presignedUrl, bucket, key } = data;
       console.log('Presigned URL:', presignedUrl);
       
-      // 2. Upload file to S3 using presigned URL
-      // Convert File to Blob to prevent browser from auto-adding Content-Type
       const fileBlob = new Blob([file]);
       
       const uploadResponse = await fetch(presignedUrl, {
@@ -73,41 +72,57 @@ const handleImageUpload = async (file: File) => {
         throw new Error(`Failed to upload file to S3: ${uploadResponse.status}`);
       }
 
-      // 3. Extract text from receipt image using AWS Textract
       const response = await awsApi.extract(bucket, key);
 
-      // 4. Set the response to currentReceipt
       setCurrentReceipt(response.data);
+      setCurrentBillID(null);
       navigate('/itemList');
     } catch (error) {
       console.error('Error processing receipt:', error);
-      // You might want to show an error message to the user here
     }
   };
 
-  const handleBack = () => {
-    setCurrentReceipt(null);
-    if (location.pathname === '/itemList') {
+  const handleBack = async () => {
+    const billId = currentBillID;
+    
+    if (location.pathname === '/itemList' && billId) {
+      await fetchBills();
       navigate('/history');
     } else {
       navigate('/');
     }
   };
 
-  const onHistoryBillClick = async (bill: ItemizedBill) => {
-    setCurrentReceipt(bill);
-    navigate('/itemList');
+  useEffect(() => {
+    if (location.pathname !== '/itemList') {
+      setCurrentReceipt(null);
+      setCurrentBillID(null);
+    }
+  }, [location.pathname]);
+
+  const onHistoryBillClick = async (bill: BillSummary) => {
+    try {
+      const billDetails = await supabaseFunctions.getBillDetails(bill.id);
+      setCurrentReceipt(billDetails);
+      setCurrentBillID(bill.id); // Store the bill id for updates
+      navigate('/itemList');
+    } catch (error) {
+      console.error('Error fetching bill details:', error);
+    }
   };
 
-  const onHistoryClick = async () => {
+  const fetchBills = async () => {
     try {
       const data = await supabaseFunctions.getMyBills();
-      const bills = data as ItemizedBill[];
-      setBills(bills);
-      navigate('/history');
+      setBills(data || []);
     } catch (error) {
       console.error('Error fetching bills:', error);
     }
+  };
+
+  const onHistoryClick = async () => {
+    await fetchBills();
+    navigate('/history');
   };
 
   const saveBill = async (bill: ItemizedBill) => {
@@ -116,6 +131,20 @@ const handleImageUpload = async (file: File) => {
       navigate('/');
     } catch (error) {
       console.error('Error saving bill:', error);
+    }
+  };
+
+  const updateBill = async (bill: ItemizedBill) => {
+    if (!currentBillID) {
+      console.error('Cannot update bill: no bill id');
+      return;
+    }
+    try {
+      await supabaseFunctions.updateBill({ ...bill, id: currentBillID });
+      await fetchBills();
+      navigate('/history');
+    } catch (error) {
+      console.error('Error updating bill:', error);
     }
   };
 
@@ -143,7 +172,7 @@ const handleImageUpload = async (file: File) => {
       />
       <Route
         path="/itemList"
-        element={currentReceipt ? <ItemList receipt={currentReceipt} onBack={handleBack} onSave={saveBill} /> : <Navigate to="/" replace />}
+        element={currentReceipt ? <ItemList receipt={currentReceipt} onBack={handleBack} onSave={currentBillID ? updateBill : saveBill} hasId={!!currentBillID} /> : <Navigate to="/" replace />}
       />
       <Route
         path="/history"

@@ -1,12 +1,8 @@
 import { getCorsHeaders } from "./cors.ts";
 
-export function formatBillsResponse(data: any[], req: Request): Response {
-  const bills = (data ?? []).map((b: any) => ({
-    id: b.id,
-    title: b.title || "",
-  }));
-
-  return new Response(JSON.stringify(bills), {
+export function createSuccessResponse(req: Request): Response {
+  return new Response(JSON.stringify({ status: 200 }), {
+    status: 200,
     headers: { ...getCorsHeaders(req), "Content-Type": "application/json" },
   });
 }
