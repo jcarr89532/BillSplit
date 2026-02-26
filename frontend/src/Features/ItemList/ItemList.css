@@ -43,17 +43,66 @@
   font-size: 1.5rem;
   font-weight: 300;
   margin-bottom: 1rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
 }
 
-.item-list-items {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding-left: 2rem;
+.item-list-title:hover {
+  background-color: rgba(31, 41, 55, 0.5);
 }
 
-.item-list-items p {
+.item-list-title-input {
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin-bottom: 1rem;
+  padding: 0.25rem;
+  background-color: #1f2937;
+  border: 1px solid #4b5563;
+  border-radius: 0.25rem;
+  color: #a0aec0;
+  width: 100%;
+  font-family: inherit;
+}
+
+.item-list-title-input:focus {
+  outline: none;
+  border-color: #60a5fa;
+}
+
+.item-list-tax-input {
+  background-color: #1f2937;
+  border: 1px solid #4b5563;
+  border-radius: 0.25rem;
+  color: #a0aec0;
+  padding: 0.25rem 0.5rem;
+  width: 80px;
+  font-family: inherit;
+}
+
+.item-list-tax-input:focus {
+  outline: none;
+  border-color: #60a5fa;
+}
+
+.item-list-summary p {
   margin: 0;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
+}
+
+.item-list-summary p:not(.item-list-tax-editing) {
+  cursor: pointer;
+}
+
+.item-list-summary p:not(.item-list-tax-editing):hover {
+  background-color: rgba(31, 41, 55, 0.5);
+}
+
+.item-list-tax-editing {
+  cursor: default;
 }
 
 .item-list-item {
@@ -89,8 +138,38 @@
   border-top: 1px solid #4b5563;
 }
 
-.item-list-save-button {
+.item-list-actions {
+  display: flex;
+  gap: 1rem;
   margin-top: 1rem;
+  justify-content: center;
+}
+
+.item-list-reset-button {
+  padding: 0.75rem 2rem;
+  background-color: #4b5563;
+  color: #a0aec0;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.item-list-reset-button:hover:not(:disabled) {
+  background-color: #374151;
+}
+
+.item-list-reset-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.item-list-save-button {
   padding: 0.75rem 2rem;
   background-color: #a0aec0;
   color: #2d3748;
@@ -98,8 +177,18 @@
   border-radius: 0.5rem;
   cursor: pointer;
   display: block;
-  margin-left: auto;
-  margin-right: auto;
   font-size: 1rem;
   font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.item-list-save-button:hover:not(:disabled) {
+  background-color: #9ca3af;
+}
+
+.item-list-save-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #4b5563;
+  color: #6b7280;
 }

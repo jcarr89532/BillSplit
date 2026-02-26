@@ -7,6 +7,9 @@ on:
     paths:
       - "backend/supabase/functions/get-my-bills/**"
       - "backend/supabase/functions/insert-bill/**"
+      - "backend/supabase/functions/get-bill-details/**"
+      - "backend/supabase/functions/update-bill/**"
+      - ".github/workflows/deploy-supabase-edge-function.yml"
   workflow_dispatch:
 
 jobs:
@@ -26,3 +29,5 @@ jobs:
           cd backend
           supabase functions deploy get-my-bills --project-ref $SUPABASE_PROJECT_ID
           supabase functions deploy insert-bill --project-ref $SUPABASE_PROJECT_ID
+          supabase functions deploy get-bill-details --project-ref $SUPABASE_PROJECT_ID
+          supabase functions deploy update-bill --project-ref $SUPABASE_PROJECT_ID

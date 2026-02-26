@@ -2,6 +2,7 @@ import { createBrowserClient } from "@supabase/ssr";
 import { ApiClient, type ApiResponse } from './client';
 import { API_CONFIG } from './config';
 import type { ItemizedBill } from '../Features/ItemList/models/ItemizedBill';
+import type { BillSummary } from '../Features/HistoryList/models/BillSummary';
 
 // ============================================================================
 // Supabase Client
@@ -73,8 +74,17 @@ export const supabaseAuth = {
 
 export const supabaseFunctions = {
   async getMyBills() {
-    const { data, error } = await supabaseClient.functions.invoke("get-my-bills", {
+    const { data, error } = await supabaseClient.functions.invoke<BillSummary[]>("get-my-bills", {
       body: {},
+    });
+
+    if (error) throw error;
+    return data;
+  },
+
+  async getBillDetails(billId: string) {
+    const { data, error } = await supabaseClient.functions.invoke<ItemizedBill>("get-bill-details", {
+      body: { id: billId },
     });
 
     if (error) throw error;
@@ -83,6 +93,15 @@ export const supabaseFunctions = {
 
   async saveBill(bill: ItemizedBill) {
     const { data, error } = await supabaseClient.functions.invoke("insert-bill", {
+      body: bill,
+    });
+
+    if (error) throw error;
+    return data;
+  },
+
+  async updateBill(bill: ItemizedBill & { id: string }) {
+    const { data, error } = await supabaseClient.functions.invoke("update-bill", {
       body: bill,
     });
 
