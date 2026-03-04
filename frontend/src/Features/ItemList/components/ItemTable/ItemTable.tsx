@@ -64,7 +64,7 @@ export const ItemTable: React.FC<ItemTableProps> = ({ items, onItemsChange }) =>
             >
               <td>{item.name}</td>
               <td>{item.qty}</td>
-              <td>${item.unit_price.toFixed(2)}</td>
+              <td>${(item.unit_price * item.qty).toFixed(2)}</td>
             </tr>
           ))}
         </tbody>
