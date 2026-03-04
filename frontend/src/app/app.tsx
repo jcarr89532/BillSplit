@@ -6,6 +6,7 @@ import { ItemList } from '../Features/ItemList/ItemList';
 import { HistoryList } from '../Features/HistoryList/HistoryList';
 import { AuthCallback } from '../Features/Login/components/AuthCallback/AuthCallback';
 import { supabaseAuth, awsApi, supabaseFunctions } from '../api/api';
+import { ItemService } from '../Features/ItemList/service/ItemService';
 import type { ItemizedBill } from '../Features/ItemList/models/ItemizedBill';
 import type { BillSummary } from '../Features/HistoryList/models/BillSummary';
 
@@ -74,7 +75,9 @@ const handleImageUpload = async (file: File) => {
 
       const response = await awsApi.extract(bucket, key);
 
-      setCurrentReceipt(response.data);
+      // Validate and correct the bill before setting it
+      const validatedBill = ItemService.validateAndCorrectBill(response.data);
+      setCurrentReceipt(validatedBill);
       setCurrentBillID(null);
       navigate('/itemList');
     } catch (error) {
@@ -103,7 +106,13 @@ const handleImageUpload = async (file: File) => {
   const onHistoryBillClick = async (bill: BillSummary) => {
     try {
       const billDetails = await supabaseFunctions.getBillDetails(bill.id);
-      setCurrentReceipt(billDetails);
+      if (!billDetails) {
+        console.error('No bill details found');
+        return;
+      }
+      // Validate and correct the bill before setting it
+      const validatedBill = ItemService.validateAndCorrectBill(billDetails);
+      setCurrentReceipt(validatedBill);
       setCurrentBillID(bill.id); // Store the bill id for updates
       navigate('/itemList');
     } catch (error) {

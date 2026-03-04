@@ -16,7 +16,7 @@ Deno.serve(async (req: Request) => {
 
   try {
     const body = await req.json();
-    const { id, title, items, tax, subtotal, total } = body;
+    const { id, title, items, tax, subtotal, total, tip } = body;
 
     if (!id) {
       return createErrorResponse("Missing bill id", 400, req);
@@ -29,6 +29,7 @@ Deno.serve(async (req: Request) => {
       p_tax: tax || 0,
       p_subtotal: subtotal || 0,
       p_total: total || 0,
+      p_tip: tip || 0,
     });
 
     if (error) {
