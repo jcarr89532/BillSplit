@@ -64,13 +64,13 @@ class OcrService:
         field_value = field.get("ValueDetection", {}).get("Text", "")
         return field_type, field_value
     
-    def format_to_itemized_bill(self, expense_data: dict) -> OcrResponse:
+    def extract_summary_fields(self, expense_data: dict) -> dict:
         """
-        Format raw Textract expense data into ItemizedBill structure.
+        Extract summary fields (title, tax, subtotal, total, tip) from expense data.
+        Returns a dictionary with the extracted values.
         """
         expense_documents = expense_data.get("ExpenseDocuments", [])
         
-        # Extract title and summary fields (tax, subtotal, total, tip)
         title = "Receipt"
         tax = 0.0
         subtotal = 0.0
@@ -93,8 +93,22 @@ class OcrService:
                 elif field_type == "TIP" and field_value:
                     tip = self.parse_currency(field_value)
         
-        # Extract line items
+        return {
+            "title": title,
+            "tax": tax,
+            "subtotal": subtotal,
+            "total": total,
+            "tip": tip
+        }
+    
+    def extract_line_items(self, expense_data: dict) -> list[Item]:
+        """
+        Extract line items from expense data.
+        Returns a list of Item objects.
+        """
+        expense_documents = expense_data.get("ExpenseDocuments", [])
         items = []
+        
         for expense_doc in expense_documents:
             line_item_groups = expense_doc.get("LineItemGroups", [])
             for group in line_item_groups:
@@ -122,7 +136,23 @@ class OcrService:
                             qty=item_qty
                         ))
         
-        return OcrResponse(title=title, items=items, tax=tax, subtotal=subtotal, total=total, tip=tip)
+        return items
+    
+    def format_to_itemized_bill(self, expense_data: dict) -> OcrResponse:
+        """
+        Format raw Textract expense data into ItemizedBill structure.
+        """
+        summary_fields = self.extract_summary_fields(expense_data)
+        items = self.extract_line_items(expense_data)
+        
+        return OcrResponse(
+            title=summary_fields["title"],
+            items=items,
+            tax=summary_fields["tax"],
+            subtotal=summary_fields["subtotal"],
+            total=summary_fields["total"],
+            tip=summary_fields["tip"]
+        )
 
     def extract_text(self, request: OcrRequest) -> OcrResponse:
         """
