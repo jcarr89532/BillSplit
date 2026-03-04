@@ -15,19 +15,23 @@ interface ItemListProps {
 export const ItemList: React.FC<ItemListProps> = ({ receipt, onBack, onSave, hasId = false }) => {
   const [title, setTitle] = useState(receipt.title);
   const [tax, setTax] = useState(receipt.tax);
+  const [tip, setTip] = useState(receipt.tip || 0);
   const [items, setItems] = useState<Item[]>(receipt.items);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isEditingTax, setIsEditingTax] = useState(false);
+  const [isEditingTip, setIsEditingTip] = useState(false);
 
   const originalBill = useMemo(() => ({
     title: receipt.title,
     tax: receipt.tax,
+    tip: receipt.tip || 0,
     items: JSON.parse(JSON.stringify(receipt.items)) as Item[],
   }), [receipt]);
 
   useEffect(() => {
     setTitle(receipt.title);
     setTax(receipt.tax);
+    setTip(receipt.tip || 0);
     setItems(receipt.items);
   }, [receipt]);
 
@@ -55,6 +59,20 @@ export const ItemList: React.FC<ItemListProps> = ({ receipt, onBack, onSave, has
     }
   };
 
+  const handleTipBlur = () => {
+    setIsEditingTip(false);
+    const tipValue = parseFloat(tip.toString()) || 0;
+    setTip(tipValue);
+  };
+
+  const handleTipKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      setIsEditingTip(false);
+      const tipValue = parseFloat(tip.toString()) || 0;
+      setTip(tipValue);
+    }
+  };
+
   const handleItemsChange = (updatedItems: Item[]) => {
     setItems(updatedItems);
   };
@@ -64,7 +82,7 @@ export const ItemList: React.FC<ItemListProps> = ({ receipt, onBack, onSave, has
   };
 
   const calculateTotal = () => {
-    return calculateSubtotal() + tax;
+    return calculateSubtotal() + tax + tip;
   };
 
   const itemsEqual = (items1: Item[], items2: Item[]): boolean => {
@@ -84,18 +102,21 @@ export const ItemList: React.FC<ItemListProps> = ({ receipt, onBack, onSave, has
     return (
       title !== originalBill.title ||
       tax !== originalBill.tax ||
+      tip !== originalBill.tip ||
       !itemsEqual(items, originalBill.items)
     );
-  }, [title, tax, items, originalBill]);
+  }, [title, tax, tip, items, originalBill]);
 
   const isSaveEnabled = !hasId || hasChanges;
 
   const handleReset = () => {
     setTitle(originalBill.title);
     setTax(originalBill.tax);
+    setTip(originalBill.tip);
     setItems(JSON.parse(JSON.stringify(originalBill.items))); // Deep copy
     setIsEditingTitle(false);
     setIsEditingTax(false);
+    setIsEditingTip(false);
   };
 
   const handleSave = () => {
@@ -103,6 +124,7 @@ export const ItemList: React.FC<ItemListProps> = ({ receipt, onBack, onSave, has
       title,
       items,
       tax,
+      tip,
       subtotal: calculateSubtotal(),
       total: calculateTotal(),
     };
@@ -147,6 +169,23 @@ export const ItemList: React.FC<ItemListProps> = ({ receipt, onBack, onSave, has
               </p>
             ) : (
               <p onClick={() => setIsEditingTax(true)}>Tax: ${tax.toFixed(2)}</p>
+            )}
+            {isEditingTip ? (
+              <p className="item-list-tax-editing">
+                Tip: $
+                <input
+                  className="item-list-tax-input"
+                  type="number"
+                  step="0.01"
+                  value={tip}
+                  onChange={(e) => setTip(parseFloat(e.target.value) || 0)}
+                  onBlur={handleTipBlur}
+                  onKeyDown={handleTipKeyDown}
+                  autoFocus
+                />
+              </p>
+            ) : (
+              <p onClick={() => setIsEditingTip(true)}>Tip: ${tip.toFixed(2)}</p>
             )}
             <p>Subtotal: ${calculateSubtotal().toFixed(2)}</p>
             <p>Total: ${calculateTotal().toFixed(2)}</p>
