@@ -6,4 +6,5 @@ export interface ItemizedBill {
   tax: number;
   subtotal: number;
   total: number;
+  tip: number;
 }

@@ -16,7 +16,7 @@ Deno.serve(async (req: Request) => {
 
   try {
     const body = await req.json();
-    const { title, items, tax, subtotal, total } = body;
+    const { title, items, tax, subtotal, total, tip } = body;
 
     const { data, error } = await supabase.rpc("insert_bill", {
       p_title: title || "",
@@ -24,6 +24,7 @@ Deno.serve(async (req: Request) => {
       p_tax: tax || 0,
       p_subtotal: subtotal || 0,
       p_total: total || 0,
+      p_tip: tip || 0,
     });
 
     if (error) {
