@@ -15,3 +15,4 @@ class OcrResponse:
     tax: float
     subtotal: float
     total: float
+    tip: float
